@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
         $stmt = $conn->prepare("INSERT INTO users (device, name, rfid, pin, role) VALUES (?, ?, ?, ?, 'user')");
         $stmt->bind_param("ssss", $device, $name, $rfid, $pin);
         $stmt->execute();
-        header("Location: index_modern.php");
+        header("Location: index.php");
         exit;
     }
 }
@@ -23,7 +23,7 @@ if (isset($_GET['delete_user_id'])) {
     $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
     $stmt->bind_param("i", $delete_user_id);
     $stmt->execute();
-    header("Location: index_modern.php");
+    header("Location: index.php");
     exit;
 }
 ?>
@@ -73,7 +73,7 @@ if (isset($_GET['delete_user_id'])) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="index_modern.php">
+            <a class="navbar-brand fw-bold text-primary" href="index.php">
                 <i class="fa-solid fa-door-open me-2"></i>Smart Door Access
             </a>
         </div>
@@ -85,7 +85,7 @@ if (isset($_GET['delete_user_id'])) {
         <!-- Form Tambah User -->
         <div class="card mb-4 p-4">
             <h5 class="mb-3 text-success fw-semibold">Tambah User Baru</h5>
-            <form method="POST" action="index_modern.php" class="row g-3">
+            <form method="POST" action="index.php" class="row g-3">
                 <input type="hidden" name="add_user" value="1" />
                 <div class="col-md-3">
                     <label for="device" class="form-label">Device</label>
@@ -205,18 +205,18 @@ if (isset($_GET['delete_user_id'])) {
                 <ul class="pagination justify-content-center">
                     <?php if ($page > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="index_modern.php?user_id=<?php echo $user_id; ?>&page=<?php echo $page - 1; ?>">Previous</a>
+                        <a class="page-link" href="index.php?user_id=<?php echo $user_id; ?>&page=<?php echo $page - 1; ?>">Previous</a>
                     </li>
                     <?php endif; ?>
                     <?php if ($page < $total_pages): ?>
                     <li class="page-item">
-                        <a class="page-link" href="index_modern.php?user_id=<?php echo $user_id; ?>&page=<?php echo $page + 1; ?>">Next</a>
+                        <a class="page-link" href="index.php?user_id=<?php echo $user_id; ?>&page=<?php echo $page + 1; ?>">Next</a>
                     </li>
                     <?php endif; ?>
                 </ul>
             </nav>
 
-            <a href="index_modern.php" class="btn btn-secondary">Kembali</a>
+            <a href="index.php" class="btn btn-secondary">Kembali</a>
         </div>
         <?php endif; ?>
     </div>

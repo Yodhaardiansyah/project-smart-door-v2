@@ -28,6 +28,8 @@ $rfid = isset($_GET['rfid']) ? $_GET['rfid'] : null;
 $pin = isset($_GET['pin']) ? $_GET['pin'] : null;
 $callback_query = $input["callback_query"] ?? null;
 
+$device_param = isset($_GET['device']) ? $_GET['device'] : null;
+
 // ✅ Proses Validasi dari ESP (RFID/PIN)
 if (!empty($rfid) || !empty($pin)) {
     $method = !empty($rfid) ? "RFID" : "PIN";
@@ -42,6 +44,17 @@ if (!empty($rfid) || !empty($pin)) {
         $user_id = $row['id'];
         $name = $row['name'];
         $device = $row['device'];
+
+        // Validate device parameter if provided
+        if ($device_param !== null && $device_param !== $device) {
+            // ❌ Log Gagal karena device tidak cocok
+            $logQuery = $conn->prepare("INSERT INTO access_logs (user_id, method, status, access_time) VALUES (?, ?, 'FAILED', ?)");
+            $logQuery->bind_param("iss", $user_id, $method, $current_time);
+            $logQuery->execute();
+
+            echo json_encode(["status" => "error", "message" => "Access denied: Device type mismatch"]);
+            exit;
+        }
 
         // 📝 Simpan Log Akses DENGAN WAKTU LOKAL
         $logQuery = $conn->prepare("INSERT INTO access_logs (user_id, method, status, access_time) VALUES (?, ?, 'SUCCESS', ?)");

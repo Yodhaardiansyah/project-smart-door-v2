@@ -8,10 +8,6 @@
 
 #define DEVICE "alat2"
 
-// 🔹 Konfigurasi Telegram
-const char* TELEGRAM_BOT_TOKEN = "7667552343:AAEd_M8j3eK3Zd_f4vn7fjI3ivc4AJavnPg";
-const char* TELEGRAM_CHAT_ID = "1243740148";      
-
 // 🔹 Konfigurasi WiFi & Server
 const char* ssid = "Yoss";
 const char* password = "06122002";
@@ -164,7 +160,6 @@ bool verifyAccess(String rfid, String pin) {
             Serial.println("👤 User: " + name);
             Serial.println("🔑 Metode: " + method);
 
-            sendTelegramMessage("✅ Akses Granted!\n👤 User: " + name + "\n🔑 Metode: " + method);
             unsigned long startRelayTime = millis();
             digitalWrite(RELAY_PIN, LOW); // 🔹 Aktifkan relay
 
@@ -185,24 +180,4 @@ bool verifyAccess(String rfid, String pin) {
     }
     
     return false;
-}
-
-
-// 🔹 Fungsi Kirim Notifikasi ke Telegram
-void sendTelegramMessage(String message) {
-    if (WiFi.status() == WL_CONNECTED) {
-        HTTPClient http;
-        String telegramServer = "https://api.telegram.org/bot" + String(TELEGRAM_BOT_TOKEN) + "/sendMessage";
-        String postData = "chat_id=" + String(TELEGRAM_CHAT_ID) + "&text=" + message;
-        
-        http.begin(client, telegramServer);
-        http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        int httpCode = http.POST(postData);
-        String response = http.getString();
-        http.end();
-
-        Serial.println("📡 Telegram Sent: " + message);
-        Serial.println("🔄 HTTP Code: " + String(httpCode));
-        Serial.println("📝 Telegram Response: " + response);
-    }
 }

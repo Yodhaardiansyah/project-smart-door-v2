@@ -14,10 +14,17 @@ date_default_timezone_set('Asia/Jakarta'); // ⏱ Pastikan sesuai zona waktu lok
 $current_time = date('Y-m-d H:i:s'); // ⏳ Format waktu lokal
 
 // 📩 Fungsi Kirim Pesan ke Telegram
-function sendMessage($chat_id, $message) {
+function sendMessage($chat_ids, $message) {
     global $API_URL;
-    $url = $API_URL . "sendMessage?chat_id=$chat_id&text=" . urlencode($message);
-    file_get_contents($url);
+    if (is_array($chat_ids)) {
+        foreach ($chat_ids as $chat_id) {
+            $url = $API_URL . "sendMessage?chat_id=$chat_id&text=" . urlencode($message);
+            file_get_contents($url);
+        }
+    } else {
+        $url = $API_URL . "sendMessage?chat_id=$chat_ids&text=" . urlencode($message);
+        file_get_contents($url);
+    }
 }
 
 // 📥 Tangkap Data dari ESP atau Telegram

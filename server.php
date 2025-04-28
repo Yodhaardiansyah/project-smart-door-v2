@@ -62,7 +62,12 @@ if (!empty($rfid) || !empty($pin)) {
         $logQuery->execute();
 
         // 🚀 Kirim Notifikasi ke Telegram
-        sendMessage($CHAT_ID_ADMIN, "✅ Akses Berhasil!\n📌 Nama: $name\n🔑 Device: $device\n🆔 Metode: $method\n🕒 Waktu: $current_time");
+        $notifMessage = "✅ Akses Berhasil!\n";
+        $notifMessage .= "📌 Nama: $name\n";
+        $notifMessage .= "🔑 Device: $device\n";
+        $notifMessage .= "🆔 Metode: $method\n";
+        $notifMessage .= "🕒 Waktu: $current_time";
+        sendMessage($CHAT_ID_ADMIN, $notifMessage);
 
         echo json_encode([
             "status" => "success",

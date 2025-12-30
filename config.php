@@ -3,8 +3,8 @@
 
 // 🔧 Koneksi ke Database
 $host = "localhost";
-$user = "smart-door";
-$pass = "smartdoor123";
+$user = "root";
+$pass = "arunovasi@2025";
 $db = "smart_door";
 
 $conn = new mysqli($host, $user, $pass, $db);

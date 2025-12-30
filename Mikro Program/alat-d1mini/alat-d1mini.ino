@@ -1,11 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <WiFiManager.h>  // Tambahkan library WiFiManager
 #include <Keypad.h>
 #include <ArduinoJson.h>
-
-// 🔧 WiFi
-const char* ssid = "Yoss";
-const char* password = "06122002";
 
 // 🔧 Server
 const char* server = "https://smart-door.arunovasi.my.id/server.php";
@@ -30,13 +27,14 @@ Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 // 🔧 WiFi & HTTP
 WiFiClientSecure client;
 HTTPClient http;
-bool wifiConnected = false;
 
 void setup() {
   Serial.begin(9600); // Komunikasi dengan ESP8266 (RFID)
   delay(1000);
   client.setInsecure(); // Abaikan SSL
-  connectWiFi();
+
+  connectWiFi();  // Hubungkan WiFi menggunakan WiFiManager
+
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, HIGH); // Kunci tertutup
 }
@@ -71,19 +69,17 @@ void loop() {
 }
 
 void connectWiFi() {
-  WiFi.begin(ssid, password);
-  int retry = 0;
-  while (WiFi.status() != WL_CONNECTED && retry < 20) {
-    delay(500);
-    retry++;
-  }
-  wifiConnected = WiFi.status() == WL_CONNECTED;
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("SmartDoorAP");  // AP default name: SmartDoorAP
+
+  // Jika berhasil connect, lanjut. Kalau gagal, ESP akan restart dan coba lagi.
+  Serial.println("Connected to WiFi!");
 }
 
 void validate(String type, String data) {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
-    if (!wifiConnected) return;
+    if (WiFi.status() != WL_CONNECTED) return;
   }
 
   String url = String(server) + "?device=" + DEVICE + "&" + type + "=" + data;
